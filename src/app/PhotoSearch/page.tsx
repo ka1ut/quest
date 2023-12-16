@@ -9,11 +9,11 @@ import {Camera} from "@/components/camera/camera";
 export default function Page(){
     const [isCaptureEnabled, setCaptureEnabled] = useState(false);
     const [isCameraStartButton, setCameraStartButton] = useState(true);
-    const [url, setUrl] = useState('');
+    const [ImgUrl, setImgUrl] = useState('');
     const [progress, setProgress] = useState(1);
-    const [response, setResponse] = useState('');
+    const [response, setResponse] = useState<string[] | null>(null);
     const [isApiLoading, setApiLoading] = useState(false);
-    const [isAPIrequest, setAPIrequest] = useState(false);
+    const [isApiRequest, setApiRequest] = useState(false);
     const [isError, setIsError] = useState(false);
 
     const uploadImage = async (base64EncodedImage:string) => {
@@ -22,17 +22,21 @@ export default function Page(){
 
     const handleClikApi = async () => {
         try{
-            const response = await fetch('/api/visionAPI',{
+            const res= await fetch('/api/visionApi',
+            {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({data: url})
+                body: JSON.stringify({ base64: ImgUrl })
             });
+            console.log(res)
 
-            if (!response.ok) {
+            if (!res.ok) {
                 throw new Error("response was not ok");
             }
-
-            console.log(response);
+            const data = await res.text();
+            const dataArray = data.split('\n'); // 改行文字で分割して配列に変換
+            setResponse(dataArray);
+            setApiRequest(false);
         } catch (error) {
             setIsError(true);
             console.error(error);
@@ -73,21 +77,21 @@ export default function Page(){
                     isCaptureEnabled={isCaptureEnabled}
                     setCameraStartButton={setCameraStartButton}
                     setCaptureEnabled={setCaptureEnabled}
-                    setUrl={setUrl}
+                    setImgUrl={setImgUrl}
                 />
-                {url && (
+                {ImgUrl && (
                 <div className=''>
-                    <img src={url} alt="Screenshot" style={{width: "100%"}}/>
+                    <img src={ImgUrl} alt="Screenshot" style={{width: "100%"}}/>
 
                     <div className='flex flex-row  justify-between'>
                         <button 
                             className=' rounded-md border bg-white border-gray-200 mx-2 px-5 py-1 md:px-12 font-semibold text-gray-900 shadow-sm'
-                            onClick={() => { setUrl(''); setCaptureEnabled(true); setProgress(1)}}>
+                            onClick={() => { setImgUrl(''); setCaptureEnabled(true); setProgress(1)}}>
                             撮り直す
                         </button>
                         <button 
                             className=' rounded-md border bg-white border-gray-200 mx-2 px-5 py-1 md:px-12 font-semibold text-gray-900 shadow-sm'
-                            onClick={() => { setProgress(2); uploadImage(url) }}>
+                            onClick={() => { setProgress(2); uploadImage(ImgUrl) }}>
                             これでOK
                         </button >
                     </div>
@@ -100,21 +104,22 @@ export default function Page(){
             {progress == 2 && (
                 <> 
                     <h1 className="mb-5 text-2xl my-10 font-bold">2. 写真から問いを探す</h1>
-                    {!isAPIrequest && (
+                    {!isApiRequest && !response &&(
                         <>
                             
                             <div className="mb-3 text-lg text-gray-500">AIが写真から、問いを考えます</div>
                                 <button
                                     className="rounded-xl border bg-white border-gray-200  hover:bg-gray-50 px-6 md:px-12 py-6 font-semibold text-gray-600 shadow-sm"
-                                    onClick= {() => {handleClikApi(); setAPIrequest(true); setApiLoading(true)}}>
+                                    onClick= {() => {handleClikApi(); setApiRequest(true); setApiLoading(true)}}>
                                     <div className = "flex flex-col items-center justify-center ">
                                         <div className=' text-xl'>AIで問いを作る</div>
                                         <BsRobot size={90}/>
                                     </div>
                                 </button>
+                                <div className='text-xl font-bold'>{response}</div>
                         </>
                     )}
-                    {isAPIrequest && !isError &&(
+                    {isApiRequest && !isError &&(
                         <>
                             <div className="mb-3 text-lg text-gray-500">AIの処理が完了するまで、しばらくお待ちください。</div>
                         </>
@@ -128,7 +133,9 @@ export default function Page(){
                     {response && (
                         
                         <>
-                            <div className='text-xl font-bold'>{response}</div>
+                            {response.map((line, index) => (
+                                <div key={index} className=' text-lg  text-gray-600 font-semibold'>{line}</div>
+                            ))}
                         </>
                     )}
                 </>
