@@ -12,7 +12,7 @@ export function Camera({ isCaptureEnabled, setCameraStartButton, setCaptureEnabl
     const [videoConstraints, setVideoConstraints] = useState({
         width: 500,
         height: 800,
-        facingMode: "user",
+        facingMode: { exact: "environment" },
     });
 
     useEffect(() => {
@@ -21,13 +21,13 @@ export function Camera({ isCaptureEnabled, setCameraStartButton, setCaptureEnabl
             setVideoConstraints({
               width: 500,
               height: 900,
-              facingMode: "user",
+              facingMode: { exact: "environment" },
             });
           } else {
             setVideoConstraints({ //for pc
               width: 900,
               height: 500,
-              facingMode: "user",
+              facingMode: { exact: "environment" },
             });
           }
         };
