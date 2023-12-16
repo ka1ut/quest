@@ -8,7 +8,7 @@ import { FaCamera } from "react-icons/fa";
 import styles from './camera.module.css';
 
   
-export function Camera({ isCaptureEnabled, setCameraStartButton, setCaptureEnabled, setUrl }: { isCaptureEnabled: boolean, setCameraStartButton: any ,setCaptureEnabled: any, setUrl: any }) {
+export function Camera({ isCaptureEnabled, setCameraStartButton, setCaptureEnabled, setImgUrl }: { isCaptureEnabled: boolean, setCameraStartButton: any ,setCaptureEnabled: any, setImgUrl: any }) {
     const [videoConstraints, setVideoConstraints] = useState({
         width: 500,
         height: 800,
@@ -44,7 +44,7 @@ export function Camera({ isCaptureEnabled, setCameraStartButton, setCaptureEnabl
       const imageSrc = webcamRef.current?.getScreenshot();
       setCaptureEnabled(false);
       if (imageSrc) {
-        setUrl(imageSrc);
+        setImgUrl(imageSrc);
       }
     }, [webcamRef]);
   
