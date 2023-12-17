@@ -7,36 +7,44 @@ import { IoMdClose } from "react-icons/io";
 import { FaCamera } from "react-icons/fa";
 import styles from './camera.module.css';
 
-  
-export function Camera({ isCaptureEnabled, setCameraStartButton, setCaptureEnabled, setImgUrl }: { isCaptureEnabled: boolean, setCameraStartButton: any ,setCaptureEnabled: any, setImgUrl: any }) {
-    const [videoConstraints, setVideoConstraints] = useState({
-        width: 500,
-        height: 800,
-        facingMode: { exact: "environment" },
-    });
 
+interface VideoConstraints {
+  width: number;
+  height: number;
+  facingMode: string | { exact: string };
+}
+
+
+export function Camera({ isCaptureEnabled, setCameraStartButton, setCaptureEnabled, setImgUrl }: { isCaptureEnabled: boolean, setCameraStartButton: any ,setCaptureEnabled: any, setImgUrl: any }) {
+    const [videoConstraints, setVideoConstraints] = useState<VideoConstraints>({
+      width: 500,
+      height: 900,
+      facingMode: "user",
+    });
+    
     useEffect(() => {
-        const handleResize = () => {
-          if (window.innerWidth <= 600) {// for mobile
-            setVideoConstraints({
-              width: 500,
-              height: 900,
-              facingMode: { exact: "environment" },
-            });
-          } else {
-            setVideoConstraints({ //for pc
-              width: 900,
-              height: 500,
-              facingMode: { exact: "environment" },
-            });
-          }
-        };
-        window.addEventListener('resize', handleResize);
-        handleResize();
-        return () => {
-          window.removeEventListener('resize', handleResize);
-        };
-      }, []);
+      const handleResize = () => {
+        if (window.innerWidth <= 600) { // モバイルの場合
+          setVideoConstraints({
+            width: 500,
+            height: 900,
+            facingMode: { exact: "environment" },
+          });
+        } else { // PCの場合
+          setVideoConstraints({ // 文字列型
+            width: 900,
+            height: 500,
+            facingMode: "user",
+          });
+        }
+      };
+      window.addEventListener('resize', handleResize);
+      handleResize();
+      return () => {
+        window.removeEventListener('resize', handleResize);
+      };
+    }, []);
+  
 
 
     const webcamRef = useRef<Webcam>(null);
