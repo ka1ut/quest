@@ -5,6 +5,8 @@ export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
         const base64Image = body.base64;
+        console.log(base64Image)
+        
         if(!base64Image){
             return NextResponse.json({error: "base64Image not found"}, { status: 500})
         }
