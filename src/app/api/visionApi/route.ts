@@ -16,14 +16,17 @@ export async function POST(req: NextRequest) {
         }
 
         const prompt = `
-        You generate the questions. This image contains social issues.
+        You generate the questions.This image contains everyday life.
 
         # Output Example
-        - 雨はどのような影響を人に与える？
-        - なぜ太陽は沈むの？
+        雨はどのような影響を人に与える？
+        なぜ太陽は沈むの？
+        なぜ空は青いの？
         
         # Careful.
         - output is Japanese
+        - output is short
+        - Generate only three qyestion
         - Don't give answers
         - Ask unique questions
         - A curious point of view`
