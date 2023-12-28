@@ -1,7 +1,7 @@
 "use client"
 import React, { useState } from 'react';
 
-import {BackButton} from "@/components/BackButton/BackButton";
+import {BackButton} from "@/components/backButton/backButton";
 import {Camera} from "@/components/camera/camera";
 import {TextBox} from "@/components/TextBox/TextBox";
 
