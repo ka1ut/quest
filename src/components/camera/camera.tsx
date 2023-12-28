@@ -5,6 +5,8 @@ import Webcam from 'react-webcam';
 
 import { IoMdClose } from "react-icons/io";
 import { FaCamera } from "react-icons/fa";
+import { MdCameraswitch } from "react-icons/md";
+
 import styles from './camera.module.css';
 
 
@@ -44,9 +46,14 @@ export function Camera({ isCaptureEnabled, setCameraStartButton, setCaptureEnabl
         window.removeEventListener('resize', handleResize);
       };
     }, []);
+
+    const switchCamera = () => {
+      setVideoConstraints(prevConstraints => ({
+          ...prevConstraints,
+          facingMode: prevConstraints.facingMode === "user" ? { exact: "environment" } : "user"
+      }));
+    };
   
-
-
     const webcamRef = useRef<Webcam>(null);
     const capture = useCallback(() => {
       const imageSrc = webcamRef.current?.getScreenshot();
@@ -68,7 +75,8 @@ export function Camera({ isCaptureEnabled, setCameraStartButton, setCaptureEnabl
                     screenshotFormat="image/jpeg"
                     videoConstraints={videoConstraints}
                 />
-                <button onClick={() => {setCaptureEnabled(false), setCameraStartButton(true)}}
+
+                <button onClick={() => {setCaptureEnabled(false), setCameraStartButton(true)}} // カメラ閉じる
                     style={{
                         position: 'absolute',
                         top: '10px', // 位置を調整
@@ -76,6 +84,17 @@ export function Camera({ isCaptureEnabled, setCameraStartButton, setCaptureEnabl
                     }}>
                     <div className=" rounded-md border bg-gray-700 px-1 py-1 text-white">
                         <IoMdClose size={15} />
+                    </div>
+                </button>
+
+                <button onClick={() => {switchCamera()}} // カメラ切り替え
+                    style={{
+                        position: 'absolute',
+                        top: '10px', // 位置を調整
+                        left: '55px', // 位置を調整
+                    }}>
+                    <div className=" rounded-md border bg-gray-700 px-1 py-1 text-white">
+                        <MdCameraswitch size={15} />
                     </div>
                 </button>
             </div>
