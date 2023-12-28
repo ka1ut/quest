@@ -34,10 +34,14 @@ export default function Page(){
             if (!res.ok) {
                 throw new Error("response was not ok");
             }
+
             const data = await res.text();
-            const dataArray = data.split('\n'); // 改行文字で分割して配列に変換
+            const cleanedData = data.replace(/^"|"$/g, '');
+            const dataArray = cleanedData.split('\\n'); // 改行文字で分割して配列に変換
             setResponse(dataArray);
+
             setApiRequest(false);
+            setProgress(3);
         } catch (error) {
             setIsError(true);
             console.error(error);
@@ -84,18 +88,21 @@ export default function Page(){
                 <div className=''>
                     <img src={ImgUrl} alt="Screenshot" style={{width: "100%"}}/>
                     
-                    { progress == 1 && (
+                    { (progress==1 || response)&& (
                     <div className='flex flex-row  justify-between'>
                         <button 
                             className=' rounded-md border bg-white border-gray-200 mx-2 px-5 py-1 md:px-12 font-semibold text-gray-900 shadow-sm'
-                            onClick={() => { setImgUrl(''); setCaptureEnabled(true); setProgress(1)}}>
+                            onClick={() => { setImgUrl(''); setCaptureEnabled(true); setProgress(1); setResponse(null)}}>
                             撮り直す
                         </button>
-                        <button 
+                        {progress == 1 &&(
+                            <button 
                             className=' rounded-md border bg-white border-gray-200 mx-2 px-5 py-1 md:px-12 font-semibold text-gray-900 shadow-sm'
                             onClick={() => { setProgress(2); uploadImage(ImgUrl) }}>
                             これでOK
                         </button >
+                        )}
+                        
                     </div>
                 )}
                     
@@ -104,7 +111,7 @@ export default function Page(){
                 
             )}
             
-            {progress == 2 && (
+            {progress >= 2 && (
                 <> 
                     <h1 className="mb-5 text-2xl my-10 font-bold">2. 写真から問いを探す</h1>
                     {!isApiRequest && !response &&(
@@ -112,7 +119,7 @@ export default function Page(){
                             
                             <div className="mb-3 text-lg text-gray-500">AIが写真から、問いを考えます</div>
                                 <button
-                                    className="rounded-xl border bg-white border-gray-200  hover:bg-gray-50 px-6 md:px-12 py-6 font-semibold text-gray-600 shadow-sm"
+                                    className="rounded-xl border bg-white border-gray-200  hover:bg-gray-50 px-6 md:px-12 py-6 font-semibold text-gray-800 shadow-sm"
                                     onClick= {() => {handleClikApi(); setApiRequest(true); setApiLoading(true)}}>
                                     <div className = "flex flex-col items-center justify-center ">
                                         <div className=' text-xl'>AIで問いを作る</div>
@@ -134,7 +141,7 @@ export default function Page(){
                         <>
                             <div className="mb-3 text-lg text-gray-500">エラーが起こりました</div>
                             <button
-                                    className="rounded-xl border bg-white border-gray-200  hover:bg-gray-50 px-6 md:px-12 py-6 font-semibold text-gray-600 shadow-sm"
+                                    className="rounded-xl border bg-white border-gray-200  hover:bg-gray-50 px-6 md:px-12 py-6 font-semibold text-gray-800 shadow-sm"
                                     onClick= {() => {handleClikApi(); setApiRequest(true); setApiLoading(true); setIsError(false)}}>
                                     <div className = "flex flex-col items-center justify-center ">
                                         <div className=' text-xl'>リトライ</div>
@@ -146,13 +153,30 @@ export default function Page(){
 
                     {response && (
                         <>
-                                <div className='text-lg text-gray-600 font-semibold'>{response}</div>
+                                <div className='text-lg text-gray-600 font-semibold'>
+                                    {response.map((item, index) => (
+                                        <p key={index}>{item}</p>
+                                    ))}
+                                </div>
+                                <button
+                                        className="rounded-xl border bg-white border-gray-200  hover:bg-gray-50 my-4 px-6 md:px-12 py-6 font-semibold text-gray-800 shadow-sm"
+                                        onClick= {() => {handleClikApi(); setApiRequest(true); setApiLoading(true); setProgress(2); setResponse(null)}}>
+                                        <div className = "flex flex-col items-center justify-center ">
+                                            <div className='text-lg'>同じ写真でもう一度</div>
+                                            <IoReload size={50}/>
+                                        </div>
+                                </button>
                         
                         </>
                     )}
 
                 </>
+            )}
 
+            {progress >= 3 && (
+                <>
+                
+                </>
             )}
                 
             </div>
