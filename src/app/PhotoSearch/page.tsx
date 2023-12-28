@@ -83,7 +83,8 @@ export default function Page(){
                 {ImgUrl && (
                 <div className=''>
                     <img src={ImgUrl} alt="Screenshot" style={{width: "100%"}}/>
-
+                    
+                    { progress == 1 && (
                     <div className='flex flex-row  justify-between'>
                         <button 
                             className=' rounded-md border bg-white border-gray-200 mx-2 px-5 py-1 md:px-12 font-semibold text-gray-900 shadow-sm'
@@ -96,6 +97,7 @@ export default function Page(){
                             これでOK
                         </button >
                     </div>
+                )}
                     
                     
                 </div>
