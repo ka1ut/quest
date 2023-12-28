@@ -1,21 +1,29 @@
 "use client"
 import React, { useState } from 'react';
 
-import {BackButton} from "@/components/backButton/backButton";
+import {BackButton} from "@/components/BackButton/BackButton";
+import {Camera} from "@/components/camera/camera";
+import {TextBox} from "@/components/TextBox/TextBox";
+
 import { FaCamera } from "react-icons/fa";
 import { BsRobot } from "react-icons/bs";
-import {Camera} from "@/components/camera/camera";
 import { IoReload } from "react-icons/io5";
+
 
 export default function Page(){
     const [isCaptureEnabled, setCaptureEnabled] = useState(false);
     const [isCameraStartButton, setCameraStartButton] = useState(true);
     const [ImgUrl, setImgUrl] = useState('');
     const [progress, setProgress] = useState(1);
+
     const [response, setResponse] = useState<string[] | null>(null);
+
     const [isApiLoading, setApiLoading] = useState(false);
     const [isApiRequest, setApiRequest] = useState(false);
     const [isError, setIsError] = useState(false);
+
+    const [question, setQuestion] = useState<string| null>(null);
+    const [answerText, setAnswerText] = useState<string| null>(null);
 
     const uploadImage = async (base64EncodedImage:string) => {
         localStorage.setItem('CapturedImage', base64EncodedImage);
@@ -155,17 +163,24 @@ export default function Page(){
                         <>
                                 <div className='text-lg text-gray-600 font-semibold'>
                                     {response.map((item, index) => (
-                                        <p key={index}>{item}</p>
+                                        <button key={index} 
+                                            className='rounded-xl border bg-white border-gray-200  hover:bg-gray-50 w-full my-2 text-left px-4 md:px-10 py-5 font-semibold text-gray-800 shadow-sm'
+                                            onClick={() => {setProgress(3);setQuestion(item)}}
+                                        >
+                                            {item}
+                                        </button>
                                     ))}
                                 </div>
-                                <button
-                                        className="rounded-xl border bg-white border-gray-200  hover:bg-gray-50 my-4 px-6 md:px-12 py-6 font-semibold text-gray-800 shadow-sm"
-                                        onClick= {() => {handleClikApi(); setApiRequest(true); setApiLoading(true); setProgress(2); setResponse(null)}}>
-                                        <div className = "flex flex-col items-center justify-center ">
-                                            <div className='text-lg'>同じ写真でもう一度</div>
-                                            <IoReload size={50}/>
-                                        </div>
-                                </button>
+                                <div>
+                                    <button
+                                            className="rounded-xl border bg-white border-gray-200  hover:bg-gray-50 w-full my-4 py-5 font-semibold text-gray-800 shadow-sm"
+                                            onClick= {() => {handleClikApi(); setApiRequest(true); setApiLoading(true); setProgress(2); setResponse(null); setQuestion(null)}}>
+                                            <div className = "flex flex-col items-center justify-center ">
+                                                <div className='text-lg'>同じ写真でもう一度</div>
+                                                <IoReload size={50}/>
+                                            </div>
+                                    </button>
+                                </div>
                         
                         </>
                     )}
@@ -173,9 +188,11 @@ export default function Page(){
                 </>
             )}
 
-            {progress >= 3 && (
+            {(progress >= 3 && question )&& (
                 <>
-                
+                    <h1 className="mb-5 text-2xl my-10 font-bold">3. 問いについて考えましょう</h1>
+                    <div className="mb-3 text-lg text-gray-600">{question}</div>
+                    <TextBox text={answerText} setText={setAnswerText} />
                 </>
             )}
                 
