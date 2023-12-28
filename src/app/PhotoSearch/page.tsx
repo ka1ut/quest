@@ -5,6 +5,7 @@ import {BackButton} from "@/components/backButton/backButton";
 import { FaCamera } from "react-icons/fa";
 import { BsRobot } from "react-icons/bs";
 import {Camera} from "@/components/camera/camera";
+import { IoReload } from "react-icons/io5";
 
 export default function Page(){
     const [isCaptureEnabled, setCaptureEnabled] = useState(false);
@@ -121,23 +122,33 @@ export default function Page(){
                     )}
                     {isApiRequest && !isError &&(
                         <>
-                            <div className="mb-3 text-lg text-gray-500">AIの処理が完了するまで、しばらくお待ちください。</div>
+                            <div className='flex flex-row'>
+                                <div className="animate-spin h-5 w-5 border-4 border-gray-300 rounded-full border-t-transparent mx-2"></div>
+                                <div className="mb-3 text-lg text-gray-500">AIの処理が完了するまで、しばらくお待ちください。</div>
+                            </div>
                         </>
                     )}
                     {isError && (
                         <>
                             <div className="mb-3 text-lg text-gray-500">エラーが起こりました</div>
+                            <button
+                                    className="rounded-xl border bg-white border-gray-200  hover:bg-gray-50 px-6 md:px-12 py-6 font-semibold text-gray-600 shadow-sm"
+                                    onClick= {() => {handleClikApi(); setApiRequest(true); setApiLoading(true); setIsError(false)}}>
+                                    <div className = "flex flex-col items-center justify-center ">
+                                        <div className=' text-xl'>リトライ</div>
+                                        <IoReload size={90}/>
+                                    </div>
+                            </button>
                         </>
                     )}
 
                     {response && (
-                        
                         <>
-                            {response.map((line, index) => (
-                                <div key={index} className=' text-lg  text-gray-600 font-semibold'>{line}</div>
-                            ))}
+                                <div className='text-lg text-gray-600 font-semibold'>{response}</div>
+                        
                         </>
                     )}
+
                 </>
 
             )}
