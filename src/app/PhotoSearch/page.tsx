@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 
 import {BackButton} from "@/components/backButton/backButton";
 import {Camera} from "@/components/camera/camera";
-import {TextBox} from "@/components/TextBox/TextBox";
 
 import { FaCamera } from "react-icons/fa";
 import { BsRobot } from "react-icons/bs";
@@ -165,7 +164,7 @@ export default function Page(){
                                     {response.map((item, index) => (
                                         <button key={index} 
                                             className='rounded-xl border bg-white border-gray-200  hover:bg-gray-50 w-full my-2 text-left px-4 md:px-10 py-5 font-semibold text-gray-800 shadow-sm'
-                                            onClick={() => {setProgress(3);setQuestion(item)}}
+                                            onClick={() => {setQuestion(item)}}
                                         >
                                             {item}
                                         </button>
@@ -185,14 +184,6 @@ export default function Page(){
                         </>
                     )}
 
-                </>
-            )}
-
-            {(progress >= 3 && question )&& (
-                <>
-                    <h1 className="mb-5 text-2xl my-10 font-bold">3. 問いについて考えましょう</h1>
-                    <div className="mb-3 text-lg text-gray-600">{question}</div>
-                    <TextBox text={answerText} setText={setAnswerText} />
                 </>
             )}
                 
