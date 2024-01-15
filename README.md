@@ -1,10 +1,11 @@
 
 # quest
-写真から問いを探すwebアプリケーション
+- 探究に対するwebアプリケーション
+
+## releases
+- [写真から問いを探す (v1.0.0)](https://github.com/ka1ut/quest/releases/tag/v1.0.0)
 
 ## Getting Started
-
-First, run the development server:
 
 ```bash
 npm run dev
